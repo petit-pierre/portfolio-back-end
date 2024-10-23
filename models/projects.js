@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 
 const projectsSchema = mongoose.Schema({
+  best: { type: Boolean, require: true },
   french_title: { type: String, required: true },
   english_title: { type: String, required: true },
   category: { type: String, required: true },
@@ -23,6 +24,15 @@ const projectsSchema = mongoose.Schema({
     },
   ],
   sliders: [
+    {
+      picture: { type: String, required: true },
+      picture_id: { type: String, required: true },
+      alt: { type: String, required: true },
+      french_content: { type: String, required: true },
+      english_content: { type: String, required: true },
+    },
+  ],
+  details: [
     {
       picture: { type: String, required: true },
       picture_id: { type: String, required: true },

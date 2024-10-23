@@ -35,6 +35,7 @@ exports.log_in = (req, res, next) => {
               .json({ message: "Paire login/mot de passe incorrecte" });
           }
           res.status(200).json({
+            password: "j7,:::DFdfDFdf45l999",
             userId: user._id,
             token: jwt.sign({ userId: user._id }, "RANDOM_TOKEN_SECRET", {
               expiresIn: "24h",
