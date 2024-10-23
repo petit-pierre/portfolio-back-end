@@ -1,4 +1,5 @@
 const User = require("../models/user");
+const password = require("../code.json");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
@@ -35,7 +36,7 @@ exports.log_in = (req, res, next) => {
               .json({ message: "Paire login/mot de passe incorrecte" });
           }
           res.status(200).json({
-            password: "j7,:::DFdfDFdf45l999",
+            password: password.pass,
             userId: user._id,
             token: jwt.sign({ userId: user._id }, "RANDOM_TOKEN_SECRET", {
               expiresIn: "24h",
