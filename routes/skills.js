@@ -7,7 +7,7 @@ router.post("/", auth, skillsCtrl.createSkill);
 
 //router.get("/:id", projectskillsCtrl.getProjectSkill);
 
-//router.put("/:id", auth, projectskillsCtrl.putProjectSkill);
+router.put("/:id", auth, skillsCtrl.putSkill);
 
 router.delete("/:id", auth, skillsCtrl.deleteSkill);
 

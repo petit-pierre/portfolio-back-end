@@ -21,3 +21,9 @@ exports.getSkills = (req, res, next) => {
     .then((skills) => res.status(200).json(skills))
     .catch((error) => res.status(400).json({ error }));
 };
+
+exports.putSkill = (req, res, next) => {
+  Skills.updateOne({ _id: req.params.id }, { ...req.body })
+    .then(() => res.status(200).json({ message: "skill modifié !" }))
+    .catch((error) => res.status(400).json({ error }));
+};

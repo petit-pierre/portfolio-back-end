@@ -7,7 +7,7 @@ router.post("/", auth, toolsCtrl.createTool);
 
 //router.get("/:id", projecttoolsCtrl.getProjectTool);
 
-//router.put("/:id", auth, projecttoolsCtrl.putProjectTool);
+router.put("/:id", auth, toolsCtrl.putTool);
 
 router.delete("/:id", auth, toolsCtrl.deleteTool);
 

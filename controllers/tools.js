@@ -21,3 +21,9 @@ exports.getTools = (req, res, next) => {
     .then((tools) => res.status(200).json(tools))
     .catch((error) => res.status(400).json({ error }));
 };
+
+exports.putTool = (req, res, next) => {
+  Tools.updateOne({ _id: req.params.id }, { ...req.body })
+    .then(() => res.status(200).json({ message: "tool modifié !" }))
+    .catch((error) => res.status(400).json({ error }));
+};
