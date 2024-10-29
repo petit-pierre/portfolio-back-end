@@ -7,7 +7,7 @@ const skillsSchema = mongoose.Schema({
   picture_url: { type: String, required: true },
   picture_id: { type: String, required: true },
   likes_id: { type: String, required: true },
-  link: { type: String, required: true },
+  links: { type: String, required: true },
 });
 
 skillsSchema.plugin(uniqueValidator);
