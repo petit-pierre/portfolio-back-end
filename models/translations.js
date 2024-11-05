@@ -10,15 +10,7 @@ const translationsSchema = mongoose.Schema({
     error_mail: { type: String, required: true },
     error_content: { type: String, required: true },
     succes: { type: String, required: true },
-    recommendation: [
-      {
-        content: { type: String, required: true },
-        author: { type: String, required: true },
-        link: { type: String, required: true },
-      },
-    ],
     cv: { type: String, required: true },
-    cv_id: { type: String, required: true },
   },
   french: {
     placeholder_mail: { type: String, required: true },
@@ -28,16 +20,16 @@ const translationsSchema = mongoose.Schema({
     error_mail: { type: String, required: true },
     error_content: { type: String, required: true },
     succes: { type: String, required: true },
-    recommendation: [
-      {
-        content: { type: String, required: true },
-        author: { type: String, required: true },
-        link: { type: String, required: true },
-      },
-    ],
     cv: { type: String, required: true },
-    cv_id: { type: String, required: true },
   },
+  recommendation: [
+    {
+      contentfr: { type: String, required: true },
+      contenteng: { type: String, required: true },
+      author: { type: String, required: true },
+      link: { type: String, required: true },
+    },
+  ],
 });
 
 translationsSchema.plugin(uniqueValidator);

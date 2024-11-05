@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 
 const projectsSchema = mongoose.Schema({
   best: { type: Boolean, require: true },
+  studie: { type: Boolean, require: true },
   french_title: { type: String, required: true },
   english_title: { type: String, required: true },
   category: { type: String, required: true },
