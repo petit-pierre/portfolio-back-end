@@ -12,10 +12,15 @@ const app = express();
 const path = require("path");
 const code = require("./code.json");
 
+// mongoose
+//   .connect(code.code, { useNewUrlParser: true, useUnifiedTopology: true })
+//   .then(() => console.log("Connexion à MongoDB réussie !"))
+//   .catch(() => console.log("Connexion à MongoDB échouée !"));
+
 mongoose
-  .connect(code.code, { useNewUrlParser: true, useUnifiedTopology: true })
+  .connect(code.code)
   .then(() => console.log("Connexion à MongoDB réussie !"))
-  .catch(() => console.log("Connexion à MongoDB échouée !"));
+  .catch((err) => console.log("Connexion à MongoDB échouée !", err));
 
 app.use(express.json());
 
@@ -23,11 +28,11 @@ app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader(
     "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content, Accept, Content-Type, Authorization"
+    "Origin, X-Requested-With, Content, Accept, Content-Type, Authorization",
   );
   res.setHeader(
     "Access-Control-Allow-Methods",
-    "GET, POST, PUT, DELETE, PATCH, OPTIONS"
+    "GET, POST, PUT, DELETE, PATCH, OPTIONS",
   );
   next();
 });
