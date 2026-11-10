@@ -56,7 +56,8 @@ io.on("connection", (socket) => {
   console.log(`User Connected: ${socket.id}`);
   socket.on("send_message", (message) => {
     //socket.to(data.room).emit("receive_message", data);
-    socket.broadcast.emit("receive_message", message);
+    // socket.broadcast.emit("receive_message", message);
+    io.emit("receive_message", message);
   });
 });
 
