@@ -11,6 +11,7 @@ const likesRoutes = require("./routes/likes");
 const app = express();
 const path = require("path");
 const code = require("./code.json");
+require("dotenv").config();
 
 // mongoose
 //   .connect(code.code, { useNewUrlParser: true, useUnifiedTopology: true })
@@ -51,4 +52,33 @@ app.use("/api/skills", skillsRoutes);
 app.use("/api/tools", toolsRoutes);
 app.use("/api/pictures", pictureRoutes);
 app.use("/api/likes", likesRoutes);
+const { GoogleGenAI } = require("@google/genai");
+const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+
+// Route pour le chatbot IA
+app.post("/api/chat", async (req, res) => {
+  try {
+    const { message } = req.body;
+    console.log("Message reçu pour l'IA :", message);
+
+    const response = await ai.models.generateContent({
+      model: "gemini-3.5-flash-lite",
+      contents: `Tu es l'assistant de Pierre Aubrée, développeur web freelance. Réponds à ceci : ${message}`,
+    });
+
+    console.log("Réponse reçue de Google AI");
+
+    // Selon la structure du nouveau SDK `@google/genai`, le texte peut se récupérer via .text ou une autre propriété
+    const replyText =
+      response.text ||
+      (response.candidates && response.candidates[0]?.content?.parts[0]?.text);
+
+    return res.status(200).json({ reply: replyText });
+  } catch (error) {
+    console.error("Erreur attrapée dans /api/chat :", error);
+    if (!res.headersSent) {
+      return res.status(500).json({ error: "Erreur avec l'IA" });
+    }
+  }
+});
 module.exports = app;
