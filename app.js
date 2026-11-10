@@ -37,6 +37,11 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use((req, res, next) => {
+  req.io = app.get("io");
+  next();
+});
+
 app.use("/images", express.static(path.join(__dirname, "images")));
 app.use("/api/projects", projectsRoutes);
 app.use("/api/sliders", slidersRoutes);

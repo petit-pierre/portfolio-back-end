@@ -8,6 +8,7 @@ const io = new Server(server, {
     //methods: ["GET", "POST", "PUT"],
   },
 });
+app.set("io", io);
 app.use(cors());
 
 const normalizePort = (val) => {
@@ -50,11 +51,6 @@ server.on("listening", () => {
   const address = server.address();
   const bind = typeof address === "string" ? "pipe " + address : "port " + port;
   console.log("Listening on " + bind);
-});
-
-app.use((req, res, next) => {
-  req.io = io;
-  next();
 });
 
 io.on("connection", (socket) => {
