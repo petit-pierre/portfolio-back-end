@@ -16,10 +16,38 @@ exports.getLike = (req, res, next) => {
     .catch((error) => res.status(404).json({ error }));
 };
 
+// exports.putLike = (req, res, next) => {
+//   Likes.updateOne({ _id: req.params.id }, { ...req.body })
+//     .then(() => res.status(200).json({ message: "like modifié !" }))
+//     .catch((error) => res.status(400).json({ error }));
+// };
+
 exports.putLike = (req, res, next) => {
-  Likes.updateOne({ _id: req.params.id }, { ...req.body })
-    .then(() => res.status(200).json({ message: "like modifié !" }))
-    .catch((error) => res.status(400).json({ error }));
+  Likes.findByIdAndUpdate(req.params.id, { $inc: { likes: 1 } }, { new: true })
+    .then((updatedLike) => {
+      if (!updatedLike) {
+        // Si on renvoie une réponse d'erreur, on met un "return"
+        // pour stopper net l'exécution de la fonction ici !
+        return res.status(404).json({ error: "Like non trouvé !" });
+      }
+
+      // 1. On émet d'abord via Socket.io (opération asynchrone interne)
+      if (req.io) {
+        req.io.emit("receive_message", {
+          id: req.params.id,
+          likes: updatedLike.likes,
+        });
+      }
+
+      // 2. On envoie la réponse HTTP unique au client
+      return res.status(200).json({ message: "Like modifié !", updatedLike });
+    })
+    .catch((error) => {
+      // Sécurité : on vérifie si les headers n'ont pas déjà été envoyés avant de répondre
+      if (!res.headersSent) {
+        return res.status(400).json({ error });
+      }
+    });
 };
 
 exports.deleteLike = (req, res, next) => {

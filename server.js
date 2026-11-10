@@ -21,7 +21,7 @@ const normalizePort = (val) => {
   }
   return false;
 };
-const port = normalizePort(process.env.PORT || "3000");
+const port = normalizePort(process.env.PORT || "3001");
 app.set("port", port);
 
 const errorHandler = (error) => {
@@ -52,12 +52,18 @@ server.on("listening", () => {
   console.log("Listening on " + bind);
 });
 
+app.use((req, res, next) => {
+  req.io = io;
+  next();
+});
+
 io.on("connection", (socket) => {
   console.log(`User Connected: ${socket.id}`);
   socket.on("send_message", (message) => {
     //socket.to(data.room).emit("receive_message", data);
     // socket.broadcast.emit("receive_message", message);
-    io.emit("receive_message", message);
+    // io.emit("receive_message", message);
+    console.log(`Message: ${message.message}`);
   });
 });
 
