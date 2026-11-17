@@ -34,7 +34,7 @@ exports.postMessage = (req, res, next) => {
       }));
 
       const chat = ai.chats.create({
-        model: "gemini-3.5-flash-lite", // ou ton modèle actuel
+        model: "gemini-3.5-flash-lite",
         history: formattedHistory,
         config: {
           systemInstruction:
@@ -73,19 +73,19 @@ exports.postMessage = (req, res, next) => {
     });
 };
 
-exports.getSession = (req, res, next) => {
-  ChatSession.findById(req.params.sessionId)
-    .then((session) => {
-      if (!session) {
-        return res.status(404).json({ error: "Session non trouvée !" });
-      }
-      return res.status(200).json(session);
-    })
-    .catch((error) => res.status(400).json({ error }));
-};
+// exports.getSession = (req, res, next) => {
+//   ChatSession.findById(req.params.sessionId)
+//     .then((session) => {
+//       if (!session) {
+//         return res.status(404).json({ error: "Session non trouvée !" });
+//       }
+//       return res.status(200).json(session);
+//     })
+//     .catch((error) => res.status(400).json({ error }));
+// };
 
-exports.getSessions = (req, res, next) => {
-  ChatSession.find()
-    .then((sessions) => res.status(200).json(sessions))
-    .catch((error) => res.status(400).json({ error }));
-};
+// exports.getSessions = (req, res, next) => {
+//   ChatSession.find()
+//     .then((sessions) => res.status(200).json(sessions))
+//     .catch((error) => res.status(400).json({ error }));
+// };

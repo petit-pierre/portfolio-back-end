@@ -53,6 +53,8 @@ server.on("listening", () => {
   console.log("Listening on " + bind);
 });
 
+require("./services/chatCron");
+
 io.on("connection", (socket) => {
   console.log(`User Connected: ${socket.id}`);
   socket.on("send_message", (message) => {
