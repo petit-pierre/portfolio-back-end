@@ -1,0 +1,969 @@
+openapi: 3.0.3
+info:
+  title: API du portfolio
+  description: >-
+    Documentation de l'API REST du portfolio. Les opérations d'administration
+    protégées nécessitent un jeton Bearer obtenu via la connexion.
+  version: 1.0.0
+servers:
+  - url: https://api.pierre-le-developpeur.com
+    description: Serveur d'api
+tags:
+  - name: Projets
+  - name: Sliders
+  - name: Traductions
+  - name: Compétences
+  - name: Outils
+  - name: Images
+  - name: Likes
+  - name: Utilisateurs
+  - name: Chat
+paths:
+  /api/projects:
+    get:
+      tags: [Projets]
+      summary: Lister les projets
+      responses:
+        "200":
+          description: Liste des projets.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Project"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+    post:
+      tags: [Projets]
+      summary: Créer un projet
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProjectCreate"
+      responses:
+        "201":
+          description: Projet créé.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Project"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+  /api/projects/{id}:
+    parameters:
+      - $ref: "#/components/parameters/MongoId"
+    get:
+      tags: [Projets]
+      summary: Récupérer un projet
+      responses:
+        "200":
+          description: Projet trouvé (ou null si aucun document ne correspond).
+          content:
+            application/json:
+              schema:
+                nullable: true
+                allOf:
+                  - $ref: "#/components/schemas/Project"
+        "404":
+          $ref: "#/components/responses/NotFound"
+    put:
+      tags: [Projets]
+      summary: Modifier un projet
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProjectUpdate"
+      responses:
+        "200":
+          $ref: "#/components/responses/Updated"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+    delete:
+      tags: [Projets]
+      summary: Supprimer un projet
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          $ref: "#/components/responses/Deleted"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /api/sliders:
+    get:
+      tags: [Sliders]
+      summary: Lister les slides
+      responses:
+        "200":
+          description: Liste des slides.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Slide"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+    post:
+      tags: [Sliders]
+      summary: Créer un slide
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SlideInput"
+      responses:
+        "201":
+          description: Slide créé.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Slide"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+  /api/sliders/{id}:
+    parameters:
+      - $ref: "#/components/parameters/MongoId"
+    get:
+      tags: [Sliders]
+      summary: Récupérer un slide
+      description: >-
+        Le contrôleur actuel référence une variable non définie ; cette route
+        répond donc actuellement 404 même si le slide existe.
+      responses:
+        "404":
+          description: Slide introuvable ou erreur actuelle du contrôleur.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    delete:
+      tags: [Sliders]
+      summary: Supprimer un slide
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          $ref: "#/components/responses/Deleted"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /api/translations:
+    get:
+      tags: [Traductions]
+      summary: Lister les traductions
+      responses:
+        "200":
+          description: Liste des traductions.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Translation"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+    post:
+      tags: [Traductions]
+      summary: Créer un document de traductions
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TranslationInput"
+      responses:
+        "201":
+          description: Traductions créées.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Translation"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+  /api/translations/{id}:
+    parameters:
+      - $ref: "#/components/parameters/MongoId"
+    get:
+      tags: [Traductions]
+      summary: Récupérer un document de traductions
+      responses:
+        "200":
+          description: Traductions trouvées (ou null si aucun document ne correspond).
+          content:
+            application/json:
+              schema:
+                nullable: true
+                allOf:
+                  - $ref: "#/components/schemas/Translation"
+        "404":
+          $ref: "#/components/responses/NotFound"
+    put:
+      tags: [Traductions]
+      summary: Modifier un document de traductions
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TranslationUpdate"
+      responses:
+        "200":
+          $ref: "#/components/responses/Updated"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+    delete:
+      tags: [Traductions]
+      summary: Supprimer un document de traductions
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          $ref: "#/components/responses/Deleted"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /api/skills:
+    get:
+      tags: [Compétences]
+      summary: Lister les compétences
+      responses:
+        "200":
+          description: Liste des compétences.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Skill"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+    post:
+      tags: [Compétences]
+      summary: Créer une compétence
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SkillInput"
+      responses:
+        "201":
+          description: Compétence créée.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Skill"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+  /api/skills/{id}:
+    parameters:
+      - $ref: "#/components/parameters/MongoId"
+    put:
+      tags: [Compétences]
+      summary: Modifier une compétence
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SkillUpdate"
+      responses:
+        "200":
+          $ref: "#/components/responses/Updated"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+    delete:
+      tags: [Compétences]
+      summary: Supprimer une compétence
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          $ref: "#/components/responses/Deleted"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /api/tools:
+    get:
+      tags: [Outils]
+      summary: Lister les outils
+      responses:
+        "200":
+          description: Liste des outils.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Tool"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+    post:
+      tags: [Outils]
+      summary: Créer un outil
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ToolInput"
+      responses:
+        "201":
+          description: Outil créé.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Tool"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+  /api/tools/{id}:
+    parameters:
+      - $ref: "#/components/parameters/MongoId"
+    put:
+      tags: [Outils]
+      summary: Modifier un outil
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ToolUpdate"
+      responses:
+        "200":
+          $ref: "#/components/responses/Updated"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+    delete:
+      tags: [Outils]
+      summary: Supprimer un outil
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          $ref: "#/components/responses/Deleted"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /api/pictures:
+    post:
+      tags: [Images]
+      summary: Téléverser une image
+      description: >-
+        Le fichier est envoyé dans le champ multipart `image`. Les types MIME
+        acceptés par le serveur sont JPEG, PNG, WebP et PDF.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [image]
+              properties:
+                image:
+                  type: string
+                  format: binary
+      responses:
+        "201":
+          description: Image téléversée.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Picture"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+  /api/pictures/{id}:
+    parameters:
+      - $ref: "#/components/parameters/MongoId"
+    delete:
+      tags: [Images]
+      summary: Supprimer une image
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          $ref: "#/components/responses/Deleted"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /api/likes:
+    get:
+      tags: [Likes]
+      summary: Lister les compteurs de likes
+      responses:
+        "200":
+          description: Liste des compteurs.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Like"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+    post:
+      tags: [Likes]
+      summary: Créer un compteur de likes
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LikeInput"
+      responses:
+        "201":
+          description: Compteur créé.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Like"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+  /api/likes/{id}:
+    parameters:
+      - $ref: "#/components/parameters/MongoId"
+    get:
+      tags: [Likes]
+      summary: Récupérer un compteur
+      responses:
+        "200":
+          description: Compteur trouvé (ou null si aucun document ne correspond).
+          content:
+            application/json:
+              schema:
+                nullable: true
+                allOf:
+                  - $ref: "#/components/schemas/Like"
+        "404":
+          $ref: "#/components/responses/NotFound"
+    put:
+      tags: [Likes]
+      summary: Incrémenter un compteur de likes
+      description: >-
+        Incrémente `likes` de 1 et émet également l'événement Socket.IO
+        `receive_message` avec l'identifiant et le nouveau total.
+      responses:
+        "200":
+          description: Compteur incrémenté.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Like modifié !
+                  updatedLike:
+                    $ref: "#/components/schemas/Like"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "404":
+          $ref: "#/components/responses/NotFound"
+    delete:
+      tags: [Likes]
+      summary: Supprimer un compteur de likes
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          $ref: "#/components/responses/Deleted"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /api/user/log_in:
+    post:
+      tags: [Utilisateurs]
+      summary: Se connecter
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                  format: password
+      responses:
+        "200":
+          description: Connexion réussie.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [userId, token]
+                properties:
+                  userId:
+                    $ref: "#/components/schemas/MongoId"
+                  token:
+                    type: string
+                    description: Jeton JWT valide pendant 24 heures.
+        "401":
+          description: Adresse e-mail ou mot de passe incorrect.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Message"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /api/chat:
+    post:
+      tags: [Chat]
+      summary: Envoyer un message au chatbot
+      description: >-
+        Sans `conversationId`, une nouvelle conversation est créée. Avec un
+        identifiant ObjectId existant, le message est ajouté à cette conversation.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [message]
+              properties:
+                conversationId:
+                  $ref: "#/components/schemas/MongoId"
+                message:
+                  type: string
+                  minLength: 1
+      responses:
+        "200":
+          description: Réponse du chatbot et identifiant de conversation.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [reply, conversationId]
+                properties:
+                  reply:
+                    type: string
+                  conversationId:
+                    $ref: "#/components/schemas/MongoId"
+        "400":
+          description: Le message est absent.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  parameters:
+    MongoId:
+      name: id
+      in: path
+      required: true
+      description: Identifiant MongoDB (ObjectId).
+      schema:
+        $ref: "#/components/schemas/MongoId"
+  responses:
+    BadRequest:
+      description: Requête invalide ou opération impossible.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+    Unauthorized:
+      description: Jeton absent, invalide ou expiré.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+    NotFound:
+      description: Ressource introuvable.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+    ServerError:
+      description: Erreur interne du serveur.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+    Updated:
+      description: Ressource modifiée.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Message"
+    Deleted:
+      description: Ressource supprimée.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Message"
+  schemas:
+    MongoId:
+      type: string
+      pattern: "^[0-9a-fA-F]{24}$"
+      example: 507f1f77bcf86cd799439011
+    Error:
+      type: object
+      properties:
+        error:
+          description: Détail ou message de l'erreur.
+    Message:
+      type: object
+      properties:
+        message:
+          type: string
+    Project:
+      type: object
+      properties:
+        _id:
+          $ref: "#/components/schemas/MongoId"
+        best:
+          type: boolean
+        studie:
+          type: boolean
+        french_title:
+          type: string
+        english_title:
+          type: string
+        category:
+          type: string
+        date:
+          type: string
+        tools:
+          type: array
+          items:
+            type: object
+            required: [id, name]
+            properties:
+              id:
+                type: string
+              name:
+                type: string
+        english_description:
+          type: string
+        french_description:
+          type: string
+        french_resum:
+          type: string
+        english_resum:
+          type: string
+        links:
+          type: array
+          items:
+            type: object
+            required: [url, category]
+            properties:
+              url:
+                type: string
+              category:
+                type: string
+        sliders:
+          type: array
+          items:
+            $ref: "#/components/schemas/ProjectContent"
+        details:
+          type: array
+          items:
+            $ref: "#/components/schemas/ProjectContent"
+        skills:
+          type: array
+          items:
+            type: object
+            required: [id, name]
+            properties:
+              id:
+                type: string
+              name:
+                type: string
+        likes_id:
+          type: string
+        slider_likes_id:
+          type: string
+        content_likes_id:
+          type: string
+    ProjectContent:
+      type: object
+      required: [picture, picture_id, alt, french_content, english_content]
+      properties:
+        picture:
+          type: string
+        picture_id:
+          type: string
+        alt:
+          type: string
+        french_content:
+          type: string
+        english_content:
+          type: string
+    ProjectCreate:
+      allOf:
+        - $ref: "#/components/schemas/Project"
+      required:
+        - best
+        - studie
+        - french_title
+        - english_title
+        - category
+        - date
+        - tools
+        - english_description
+        - french_description
+        - french_resum
+        - english_resum
+        - links
+        - sliders
+        - details
+        - skills
+        - likes_id
+        - slider_likes_id
+        - content_likes_id
+    ProjectUpdate:
+      allOf:
+        - $ref: "#/components/schemas/Project"
+    Slide:
+      allOf:
+        - $ref: "#/components/schemas/ProjectContent"
+        - type: object
+          properties:
+            _id:
+              $ref: "#/components/schemas/MongoId"
+    SlideInput:
+      $ref: "#/components/schemas/ProjectContent"
+    Translation:
+      type: object
+      properties:
+        _id:
+          $ref: "#/components/schemas/MongoId"
+        english:
+          $ref: "#/components/schemas/TranslationLanguage"
+        french:
+          $ref: "#/components/schemas/TranslationLanguage"
+        recommendation:
+          type: array
+          items:
+            type: object
+            required: [contentfr, contenteng, author, link]
+            properties:
+              contentfr:
+                type: string
+              contenteng:
+                type: string
+              author:
+                type: string
+              link:
+                type: string
+    TranslationLanguage:
+      type: object
+      required:
+        - placeholder_mail
+        - skills
+        - contact
+        - button
+        - error_mail
+        - error_content
+        - succes
+        - cv
+      properties:
+        placeholder_mail:
+          type: string
+        skills:
+          type: string
+        contact:
+          type: string
+        button:
+          type: string
+        error_mail:
+          type: string
+        error_content:
+          type: string
+        succes:
+          type: string
+        cv:
+          type: string
+    TranslationInput:
+      allOf:
+        - $ref: "#/components/schemas/Translation"
+      required: [english, french, recommendation]
+    TranslationUpdate:
+      type: object
+      description: Champs à modifier ; les propriétés sont facultatives.
+      properties:
+        english:
+          $ref: "#/components/schemas/TranslationLanguageUpdate"
+        french:
+          $ref: "#/components/schemas/TranslationLanguageUpdate"
+        recommendation:
+          type: array
+          items:
+            type: object
+            properties:
+              contentfr:
+                type: string
+              contenteng:
+                type: string
+              author:
+                type: string
+              link:
+                type: string
+    TranslationLanguageUpdate:
+      type: object
+      properties:
+        placeholder_mail:
+          type: string
+        skills:
+          type: string
+        contact:
+          type: string
+        button:
+          type: string
+        error_mail:
+          type: string
+        error_content:
+          type: string
+        succes:
+          type: string
+        cv:
+          type: string
+    Skill:
+      type: object
+      properties:
+        _id:
+          $ref: "#/components/schemas/MongoId"
+        french_title:
+          type: string
+        english_title:
+          type: string
+        picture_url:
+          type: string
+        picture_id:
+          type: string
+        likes_id:
+          type: string
+        links:
+          type: string
+    SkillInput:
+      allOf:
+        - $ref: "#/components/schemas/Skill"
+      required:
+        [french_title, english_title, picture_url, picture_id, likes_id, links]
+    SkillUpdate:
+      $ref: "#/components/schemas/Skill"
+    Tool:
+      type: object
+      properties:
+        _id:
+          $ref: "#/components/schemas/MongoId"
+        title:
+          type: string
+        categorie:
+          type: string
+        picture_url:
+          type: string
+        picture_id:
+          type: string
+        likes_id:
+          type: string
+        links:
+          type: string
+    ToolInput:
+      allOf:
+        - $ref: "#/components/schemas/Tool"
+      required: [title, categorie, picture_url, picture_id, likes_id, links]
+    ToolUpdate:
+      $ref: "#/components/schemas/Tool"
+    Picture:
+      type: object
+      properties:
+        _id:
+          $ref: "#/components/schemas/MongoId"
+        imageUrl:
+          type: string
+          format: uri
+    Like:
+      type: object
+      properties:
+        _id:
+          $ref: "#/components/schemas/MongoId"
+        title:
+          type: string
+        likes:
+          type: integer
+    LikeInput:
+      type: object
+      required: [likes]
+      properties:
+        title:
+          type: string
+        likes:
+          type: integer
