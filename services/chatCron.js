@@ -51,6 +51,7 @@ cron.schedule("0 * * * *", async () => {
           const bgColor = isUser ? "#ffffff" : "#99477a";
           const textColor = isUser ? "#000000" : "#ffffff";
           const senderLabel = isUser ? "Visiteur" : "Assistant";
+          const alignment = isUser ? "left" : "right";
           const formattedContent = isUser
             ? m.content
                 .replace(/&/g, "&amp;")
@@ -60,9 +61,9 @@ cron.schedule("0 * * * *", async () => {
             : parseMarkdownToHtml(m.content);
 
           return `
-            <div style="width: 100%; background-color: ${bgColor}; color: ${textColor}; padding: 15px 20px; box-sizing: border-box; border-bottom: 1px solid #eaeaea; font-family: Arial, sans-serif;">
+            <div style="width: 100%; background-color: ${bgColor}; text-align: ${alignment}; color: ${textColor}; padding: 15px 20px; box-sizing: border-box; border-bottom: 1px solid #eaeaea; font-family: Arial, sans-serif;">
               <strong style="font-size: 12px; opacity: 0.8; text-transform: uppercase; display: block; margin-bottom: 5px;">${senderLabel}</strong>
-              <div style="font-size: 14px; line-height: 1.5; white-space: pre-wrap;">${m.content}</div>
+              <div style="font-size: 14px; line-height: 1.5; white-space: pre-wrap;">${formattedContent}</div>
             </div>
           `;
         })
