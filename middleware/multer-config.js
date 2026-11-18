@@ -13,24 +13,13 @@ const storage = multer.diskStorage({
     callback(null, "images");
   },
   filename: (req, file, callback) => {
-    const name = file.originalname.split(" ").join("_");
+    const originalName = file.originalname.split(" ").join("_");
+    const filenameArray = originalName.split(".");
+    filenameArray.pop();
+    const filenameWithoutExtension = filenameArray.join(".");
     const extension = MIME_TYPES[file.mimetype];
-    callback(null, name + Date.now() + "." + extension);
+    callback(null, filenameWithoutExtension + Date.now() + "." + extension);
   },
 });
-
-/*const storage = multer.diskStorage({
-  destination: function (req, file, callback) {
-    callback(null, "./images");
-  },
-  filename: (req, file, callback) => {
-    const filename = file.originalname.split(" ").join("_");
-    const filenameArray = filename.split(".");
-    filenameArray.pop();
-    const filenameWithoutExtention = filenameArray.join(".");
-    const extension = MIME_TYPE[file.mimetype];
-    callback(null, filenameWithoutExtention + Date.now() + "." + extension);
-  },
-});*/
 
 module.exports = multer({ storage: storage }).single("image");

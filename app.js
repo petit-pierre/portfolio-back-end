@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
 const projectsRoutes = require("./routes/projects");
@@ -11,7 +12,6 @@ const likesRoutes = require("./routes/likes");
 const chatRoutes = require("./routes/chat");
 const app = express();
 const path = require("path");
-const code = require("./code.json");
 
 // mongoose
 //   .connect(code.code, { useNewUrlParser: true, useUnifiedTopology: true })
@@ -19,7 +19,7 @@ const code = require("./code.json");
 //   .catch(() => console.log("Connexion à MongoDB échouée !"));
 
 mongoose
-  .connect(code.code)
+  .connect(process.env.MONGODB_URI)
   .then(() => console.log("Connexion à MongoDB réussie !"))
   .catch((err) => console.log("Connexion à MongoDB échouée !", err));
 
