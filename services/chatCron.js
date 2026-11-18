@@ -12,6 +12,25 @@ const transporter = nodemailer.createTransport({
   },
 });
 
+const parseMarkdownToHtml = (text) => {
+  if (!text) return "";
+
+  return (
+    text
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+      .replace(/\*(.*?)\*/g, "<em>$1</em>")
+      .replace(
+        /\[([^\]]+)\]\(([^)]+)\)/g,
+        '<a href="$2" target="_blank" style="color: #99477a; text-decoration: underline;">$1</a>',
+      )
+      // Sauts de ligne : \n -> <br>
+      .replace(/\n/g, "<br>")
+  );
+};
+
 cron.schedule("0 * * * *", async () => {
   try {
     const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
@@ -32,6 +51,13 @@ cron.schedule("0 * * * *", async () => {
           const bgColor = isUser ? "#ffffff" : "#99477a";
           const textColor = isUser ? "#000000" : "#ffffff";
           const senderLabel = isUser ? "Visiteur" : "Assistant";
+          const formattedContent = isUser
+            ? m.content
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/\n/g, "<br>")
+            : parseMarkdownToHtml(m.content);
 
           return `
             <div style="width: 100%; background-color: ${bgColor}; color: ${textColor}; padding: 15px 20px; box-sizing: border-box; border-bottom: 1px solid #eaeaea; font-family: Arial, sans-serif;">
